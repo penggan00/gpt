@@ -5,6 +5,8 @@ services:
     image: penggan0/gemini_tg_bot:latest  # 镜像名称
     container_name: gemini_tg_bot  # 容器名称（可选）
     restart: always # 容器退出后总是重启 (可选)
+    volumes:
+      - ./chats.db:/app/chats.db  # 挂载本地 chats.db 文件到容器内的 /app/chats.db
     environment:  # 环境变量
       TELEGRAM_GEMINI_KEY: "123"
       GEMINI_API_KEY: "123"
