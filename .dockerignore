@@ -1,0 +1,13 @@
+.gitignore
+.env
+gpt.sh
+README.md
+setup.sh
+telegram.wk.js
+telegram.wk.md
+docker-compose.yml
+gemini.md
+chats.db
+chats.db-shm
+chats.db-wal
+gpt_venv

@@ -1,0 +1,13 @@
+version: "3.8"  # 使用的 Compose 文件版本
+
+services:
+  gemini_bot:  # 服务名称，可以自定义
+    image: penggan0/gemini_tg_bot:latest  # 镜像名称
+    container_name: gemini_tg_bot  # 容器名称（可选）
+    restart: always # 容器退出后总是重启 (可选)
+    environment:  # 环境变量
+      TELEGRAM_GEMINI_KEY: "123"
+      GEMINI_API_KEY: "123"
+      GPT_ENGINE: "gpt-4"
+      TELEGRAM_CHAT_ID: "123
+    mem_limit: 512m  # 内存限制
