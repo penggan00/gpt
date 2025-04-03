@@ -46,7 +46,7 @@ print("Telegram bot initialized.")
 user_chats: Dict[int, Tuple[genai.ChatSession, float]] = {}
 
 # 数据库初始化
-conn = sqlite3.connect('chats.db')
+conn = sqlite3.connect('/app/chats.db')  # 使用容器内绝对路径
 cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS chats
              (user_id INTEGER, timestamp REAL, role TEXT, content TEXT)''')
