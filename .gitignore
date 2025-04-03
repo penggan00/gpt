@@ -1,7 +1,13 @@
 .env
 telegram.wk
-docker-composel.yml
+docker-compose.yml
 chats.db
 chats.db-shm
 chats.db-wal
 docker-compose22.yml
+gemini.md
+gpt.sh
+README2.md
+setup.sh
+telegram.wk.js
+telegram.wk.md
