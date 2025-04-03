@@ -1,0 +1,7 @@
+.env
+telegram.wk
+docker-composel.yml
+chats.db
+chats.db-shm
+chats.db-wal
+docker-compose22.yml
