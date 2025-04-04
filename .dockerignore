@@ -11,3 +11,5 @@ chats.db
 chats.db-shm
 chats.db-wal
 gpt_venv
+Dockerfile copy
+.env.yml
