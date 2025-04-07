@@ -11,5 +11,7 @@ chats.db
 chats.db-shm
 chats.db-wal
 gpt_venv
-Dockerfile copy
+Dockerfile alpine
 .env.yml
+Dockerfile slim
+gpt copy.py
