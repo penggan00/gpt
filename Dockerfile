@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     linux-headers
 
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir --prefix=/install -r requirements.txt
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # 第二阶段：运行环境（剥离所有构建工具）
 FROM python:3.10-alpine
