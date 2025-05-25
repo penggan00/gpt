@@ -7,13 +7,10 @@ from telebot.types import Message
 import google.generativeai as genai
 from md2tgmd import escape
 import os
-from pathlib import Path
 from dotenv import load_dotenv
 import time
 from typing import Dict, Tuple, List, Optional
-import sqlite3
 import re
-
 
 # 加载环境变量
 load_dotenv()
@@ -47,19 +44,6 @@ print("Telegram bot initialized.")
 # 会话管理
 user_chats: Dict[int, Tuple[genai.ChatSession, float]] = {}
 
-# 替换原有数据库初始化代码
-BASE_DIR = Path(__file__).parent
-DB_PATH = BASE_DIR / "chats.db"
-
-# 确保数据库文件存在
-DB_PATH.touch(exist_ok=True)
-
-conn = sqlite3.connect(str(DB_PATH))
-cursor = conn.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS chats
-             (user_id INTEGER, timestamp REAL, role TEXT, content TEXT)''')
-conn.commit()
-
 # 辅助函数
 def get_user_chat(user_id: int) -> genai.ChatSession:
     """获取或创建用户的聊天会话（1小时过期）"""
@@ -80,12 +64,6 @@ def clear_user_context(user_id: int):
     """清空用户对话上下文"""
     if user_id in user_chats:
         del user_chats[user_id]
-
-def save_message(user_id: int, timestamp: float, role: str, content: str):
-    """保存消息到数据库"""
-    cursor.execute("INSERT INTO chats (user_id, timestamp, role, content) VALUES (?, ?, ?, ?)",
-                   (user_id, timestamp, role, content))
-    conn.commit()
 
 def is_user_allowed(message):
     """检查用户权限"""
@@ -203,10 +181,6 @@ async def echo_all(message: Message):
         chat = get_user_chat(message.from_user.id)
         user_message = f"请用中文回答：{message.text}"  # <-- 关键修改
 
-        # 保存用户消息
-        timestamp = time.time()
-        save_message(message.from_user.id, timestamp, "user", user_message)
-
         # 调用Gemini API
         try:
             response = await asyncio.to_thread(chat.send_message, user_message)
@@ -214,7 +188,6 @@ async def echo_all(message: Message):
                 raise ValueError("Empty response from API")
 
             gemini_response = response.text
-            save_message(message.from_user.id, timestamp, "model", gemini_response)
 
             # 发送优化后的消息
             await send_with_status(message.chat.id, gemini_response)
