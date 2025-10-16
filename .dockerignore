@@ -15,3 +15,5 @@ Dockerfile alpine
 .env.yml
 Dockerfile slim
 gpt copy.py
+tg,index-mk2.js
+tg,index.js
