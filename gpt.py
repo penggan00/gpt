@@ -7,6 +7,7 @@ import time
 import traceback
 import io
 import re
+import json
 from typing import Dict, List, Optional
 from dotenv import load_dotenv
 from telegram import Update
@@ -34,6 +35,7 @@ POLLING_TIMEOUT = int(os.getenv("POLLING_TIMEOUT", "45"))
 # 可用模型列表
 AVAILABLE_MODELS = {
     "gemini-2.5-flash": "(平衡性能)",
+    "gemini-3-flash": "(平衡性能)",
     "deepseek-chat":    "(通用对话)",
     "deepseek-reasoner":"(推理专用)",
     "deepseek-coder":   "(编程专用)"
@@ -486,6 +488,7 @@ async def handle_model_command(update: Update, context: ContextTypes.DEFAULT_TYP
 
 **gemini:**
 `/model gemini-2.5-flash`  (平衡性能)
+`/model gemini-3-flash`  (平衡性能)
 
 **deekseek:**
 `/model deepseek-chat`          (通用对话)
