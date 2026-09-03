@@ -1,7 +1,7 @@
 name: Build Alpine Python Venv
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 手动触发
 
 jobs:
   build:
@@ -11,42 +11,50 @@ jobs:
     steps:
     - name: Install system dependencies
       run: |
-        apk add --no-cache python3 python3-dev py3-pip gcc musl-dev linux-headers
+        apk add --no-cache \
+          python3 python3-dev py3-pip \
+          gcc musl-dev linux-headers \
+          libffi-dev openssl-dev \
+          jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev
     
     - name: Create venv and install packages
       run: |
-        python3 -m venv rss_venv
-        source rss_venv/bin/activate
+        python3 -m venv --copies myapp_venv
+        source myapp_venv/bin/activate
         pip install --upgrade pip
-          pip install \
-        python-dotenv==1.2.1 \
-        python-telegram-bot==22.5 \
-        Pillow==10.4.0 \
-        google-generativeai==0.8.4 \
-        md2tgmd==0.3.10 \
-        aiohttp==3.11.16
-        
-    - name: Remove unused SDK modules
-      run: |
-        SDK_DIR="rss_venv/lib/python3.12/site-packages/tencentcloud"
-        for dir in "$SDK_DIR"/*/; do
-          dirname=$(basename "$dir")
-          if [ "$dirname" != "common" ] && [ "$dirname" != "tmt" ]; then
-            rm -rf "$dir"
-          fi
-        done
+        pip install \
+          python-dotenv==1.2.1 \
+          python-telegram-bot==22.5 \
+          Pillow==10.4.0 \
+          google-generativeai==0.8.4 \
+          md2tgmd==0.3.10 \
+          aiohttp==3.11.16
     
     - name: Clean up unused files
       run: |
-        rm -rf rss_venv/lib/python3.*/site-packages/pip
-        rm -rf rss_venv/lib/python3.*/site-packages/setuptools
-        find rss_venv -type d -name "__pycache__" -exec rm -rf {} +
+        # 删除 pip 和 setuptools
+        rm -rf myapp_venv/lib/python3.*/site-packages/pip
+        rm -rf myapp_venv/lib/python3.*/site-packages/setuptools
+        rm -rf myapp_venv/lib/python3.*/site-packages/pip-*.dist-info
+        rm -rf myapp_venv/lib/python3.*/site-packages/setuptools-*.dist-info
+        
+        # 删除缓存和测试文件
+        find myapp_venv -type d -name "__pycache__" -exec rm -rf {} +
+        find myapp_venv -type d -name "tests" -exec rm -rf {} +
+        find myapp_venv -type f -name "*.pyc" -delete
+    
+    - name: Debug size
+      run: |
+        echo "=== venv size ==="
+        du -sh myapp_venv
+        echo "=== file count ==="
+        find myapp_venv | wc -l
     
     - name: Package
-      run: tar -czf rss_venv.tar.gz rss_venv
+      run: tar -czf myapp_venv.tar.gz myapp_venv
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: rss-venv-alpine
-        path: rss_venv.tar.gz
+        name: myapp-venv-alpine
+        path: myapp_venv.tar.gz
